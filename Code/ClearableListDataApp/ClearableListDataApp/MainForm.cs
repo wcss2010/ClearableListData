@@ -70,18 +70,21 @@ namespace ClearableListDataApp
             {
                 if (Config != null && Config.WebSiteList != null)
                 {
-                    //当前列表
-                    List<string> existList = new List<string>(new ClearableListDataHelper().GetDomains());
-
-                    foreach (string s in Config.WebSiteList)
+                    if (MessageBox.Show("真的要导入吗？", "提示", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
                     {
-                        if (existList.Contains(s))
-                        {
-                            continue;
-                        }
+                        //当前列表
+                        List<string> existList = new List<string>(new ClearableListDataHelper().GetDomains());
 
-                        new ClearableListDataHelper().AddNewSiteToCompatibilityViewList(s);
-                        existList.Add(s);
+                        foreach (string s in Config.WebSiteList)
+                        {
+                            if (existList.Contains(s))
+                            {
+                                continue;
+                            }
+
+                            new ClearableListDataHelper().AddNewSiteToCompatibilityViewList(s);
+                            existList.Add(s);
+                        }
                     }
                 }
 
