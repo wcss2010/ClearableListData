@@ -152,6 +152,7 @@ namespace ClearableListDataApp
         {
             try
             {
+                lbxCurrent.Items.Clear();
                 string[] ttt = new ClearableListDataHelper().GetDomains();
                 if (ttt != null)
                 {
