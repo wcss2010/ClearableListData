@@ -29,7 +29,7 @@ namespace ClearableListDataApp
         /// 得到已经存在的所有兼容网站列表，如果没有，则返回空数组。
         /// </summary>
         /// <returns></returns>
-        private string[] GetDomains()
+        public string[] GetDomains()
         {
             string[] domains = { };
             using (RegistryKey regkey = Registry.CurrentUser.OpenSubKey(CLEARABLE_LIST_DATA))
@@ -50,7 +50,7 @@ namespace ClearableListDataApp
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
-        private string[] GetDomains(byte[] filter)
+        public string[] GetDomains(byte[] filter)
         {
             List<string> domains = new List<string>();
             int length;
@@ -69,7 +69,7 @@ namespace ClearableListDataApp
         /// 从兼容性列表中删除一个网站。
         /// </summary>
         /// <param name="domain">要删除网站</param>
-        private void RemoveUserFilter(string domain)
+        public void RemoveUserFilter(string domain)
         {
             String[] domains = GetDomains();
             if (!domains.Contains(domain))
@@ -98,7 +98,7 @@ namespace ClearableListDataApp
         /// <param name="domain"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
-        private byte[] GetRemovedValue(string domain, byte[] filter)
+        public byte[] GetRemovedValue(string domain, byte[] filter)
         {
             byte[] newReg;
             int length;
@@ -132,7 +132,7 @@ namespace ClearableListDataApp
         /// 向兼容性列表中添加一个网站
         /// </summary>
         /// <param name="domain"></param>
-        private void AddNewSiteToCompatibilityViewList(String domain)
+        public void AddNewSiteToCompatibilityViewList(String domain)
         {
             String[] domains = GetDomains();
             if (domains.Length > 0)
@@ -171,7 +171,7 @@ namespace ClearableListDataApp
         /// </summary>
         /// <param name="domain"></param>
         /// <returns></returns>
-        private byte[] GetDomainEntry(String domain)
+        public byte[] GetDomainEntry(String domain)
         {
             byte[] tmpbinary = new byte[0];
             byte[] length = BitConverter.GetBytes((UInt16)domain.Length);
@@ -190,7 +190,7 @@ namespace ClearableListDataApp
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        private byte[] Combine(byte[] a, byte[] b)
+        public byte[] Combine(byte[] a, byte[] b)
         {
             byte[] c = new byte[a.Length + b.Length];
             System.Buffer.BlockCopy(a, 0, c, 0, a.Length);
