@@ -105,7 +105,7 @@
             this.lbxCurrent.ItemHeight = 14;
             this.lbxCurrent.Location = new System.Drawing.Point(3, 19);
             this.lbxCurrent.Name = "lbxCurrent";
-            this.lbxCurrent.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
+            this.lbxCurrent.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.lbxCurrent.Size = new System.Drawing.Size(475, 539);
             this.lbxCurrent.TabIndex = 0;
             // 
