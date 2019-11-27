@@ -109,6 +109,7 @@ namespace ClearableListDataApp
                                 new ClearableListDataHelper().RemoveUserFilter(obj.ToString());
                             }
                         }
+                        btnRefresh.PerformClick();
                         MessageBox.Show("删除完成！");
                     }
                     catch (Exception ex)
