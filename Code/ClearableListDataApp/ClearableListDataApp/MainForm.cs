@@ -14,7 +14,7 @@ namespace ClearableListDataApp
         /// <summary>
         /// 配置文件路径
         /// </summary>
-        public static string configFile = System.IO.Path.Combine(Application.StartupPath, "configs.cfg");
+        public static string configFile = System.IO.Path.Combine(Application.StartupPath, "local.ieviewconfig");
 
         /// <summary>
         /// 配置对象
@@ -26,15 +26,22 @@ namespace ClearableListDataApp
             InitializeComponent();
 
             //载入配置
-            if (System.IO.File.Exists(configFile))
+            try
             {
-                Config = ClearableListObject.fromFile(configFile);
+                if (System.IO.File.Exists(configFile))
+                {
+                    Config = ClearableListObject.fromFile(configFile);
+                }
+                else
+                {
+                    Config = new ClearableListObject();
+                    Config.WebSiteList.Add("test.com");
+                    ClearableListObject.toFile(Config, configFile);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Config = new ClearableListObject();
-                Config.WebSiteList.Add("test.com");
-                ClearableListObject.toFile(Config, configFile);
+                MessageBox.Show("配置文件载入失败！Ex:" + ex.ToString());
             }
         }
 
@@ -43,6 +50,120 @@ namespace ClearableListDataApp
             base.OnLoad(e);
 
             this.Text += "(" + System.IO.Path.GetFileName(configFile) + ")";
+
+            //载入需要导入的域名列表
+            if (Config != null && Config.WebSiteList != null)
+            {
+                foreach (string s in Config.WebSiteList)
+                {
+                    lbxSource.Items.Add(s);
+                }
+            }
+
+            //载入IE兼容性视图配置
+            btnRefresh.PerformClick();
+        }
+
+        private void btnLoadDomainList_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (Config != null && Config.WebSiteList != null)
+                {
+                    //当前列表
+                    List<string> existList = new List<string>(new ClearableListDataHelper().GetDomains());
+
+                    foreach (string s in Config.WebSiteList)
+                    {
+                        if (existList.Contains(s))
+                        {
+                            continue;
+                        }
+
+                        new ClearableListDataHelper().AddNewSiteToCompatibilityViewList(s);
+                        existList.Add(s);
+                    }
+                }
+
+                //刷新IE兼容性视图配置
+                btnRefresh.PerformClick();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("加载失败！Ex:" + ex.ToString());
+            }
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (lbxCurrent.SelectedItems.Count >= 1)
+            {
+                if (MessageBox.Show("真的要删除吗？", "提示", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+                {
+                    try
+                    {
+                        foreach (object obj in lbxCurrent.SelectedItems)
+                        {
+                            if (obj != null)
+                            {
+                                new ClearableListDataHelper().RemoveUserFilter(obj.ToString());
+                            }
+                        }
+                        MessageBox.Show("删除完成！");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("删除失败！Ex:" + ex.ToString());
+                    }
+                }
+            }
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string[] ttt = new ClearableListDataHelper().GetDomains();
+                if (ttt != null)
+                {
+                    try
+                    {
+                        string tempFile = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "兼容性视图配置.ieviewconfig");
+                        ClearableListObject clo = new ClearableListObject();
+                        clo.WebSiteList.AddRange(ttt);
+                        ClearableListObject.toFile(clo, tempFile);
+
+                        MessageBox.Show("保存完成!路径:" + tempFile);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("保存失败！Ex:" + ex.ToString());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("保存失败！Ex:" + ex.ToString());
+            }
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string[] ttt = new ClearableListDataHelper().GetDomains();
+                if (ttt != null)
+                {
+                    foreach (string t in ttt)
+                    {
+                        lbxCurrent.Items.Add(t);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("IE兼容性视图列表载入失败！Ex:" + ex.ToString());
+            }
         }
     }
 
